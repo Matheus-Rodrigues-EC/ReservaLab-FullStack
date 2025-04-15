@@ -1,0 +1,6 @@
+[submodule "ReservaLab-NestJS"]
+	path = ReservaLab-NestJS
+	url = https://github.com/Matheus-Rodrigues-EC/ReservaLab-NestJS
+[submodule "ReservaLab-ReactJS"]
+	path = ReservaLab-ReactJS
+	url = https://github.com/Matheus-Rodrigues-EC/ReservaLab-ReactJS

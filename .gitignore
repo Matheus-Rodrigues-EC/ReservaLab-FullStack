@@ -1,0 +1,3 @@
+# Ignora node_modules e outros arquivos que não precisam estar aqui
+node_modules/
+.env

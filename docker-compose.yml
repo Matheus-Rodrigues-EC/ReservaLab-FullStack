@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ReservaLabPostgreSQL
+      POSTGRES_DB: ReservaLab
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - reservanet
+
+  backend:
+    build:
+      context: ./ReservaLab-NestJS
+    image: mattrodriguesec/reservalab-backend:latest
+    container_name: reserva-backend
+    ports:
+      - "3000:3000"
+    environment:
+      JWT_SECRET: mysecretkey
+      DATABASE_URL: postgres://postgres:ReservaLabPostgreSQL@db:5432/ReservaLab
+    depends_on:
+      - db
+    volumes:
+      - ./ReservaLab-NestJS:/app
+      - /app/node_modules
+    command: sh -c "npx prisma generate && npx prisma migrate dev --name init && npm run start:dev"
+    networks:
+      - reservanet
+
+  frontend:
+    build:
+      context: ./ReservaLab-ReactJS
+    image: mattrodriguesec/reservalab-frontend:latest
+    container_name: reserva-frontend
+    ports:
+      - "5000:80"
+    environment:
+      - VITE_API_URL=http://reserva-backend:3000
+    volumes:
+      - ./ReservaLab-ReactJS:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - reservanet
+
+volumes:
+  pgdata:
+
+networks:
+  reservanet:
+    driver: bridge
